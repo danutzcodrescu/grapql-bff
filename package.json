@@ -1,0 +1,26 @@
+{
+  "name": "grapql-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "apollo-server-express": "^1.3.2",
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "graphql": "^0.13.0",
+    "graphql-tools": "^2.20.2",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.0",
+    "pg": "^7.4.1",
+    "sequelize": "^4.33.3",
+    "serve-favicon": "~2.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.12",
+    "sequelize-cli": "^3.2.0"
+  }
+}
