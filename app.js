@@ -3,13 +3,16 @@ var path = require("path");
 var logger = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
+import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
+import { merge } from 'lodash';
 
 const {
-  graphqlExpress,
-  graphiqlExpress,
-  Query
+	graphqlExpress,
+	graphiqlExpress,
+	Query
 } = require("apollo-server-express");
 const { makeExecutableSchema } = require("graphql-tools");
+import userConnection from './connections/users.connection';
 
 var app = express();
 
@@ -17,33 +20,23 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
-// Some fake data
-const books = [
-  {
-    title: "Harry Potter and the Sorcerer's stone",
-    author: "J.K. Rowling"
-  },
-  {
-    title: "Jurassic Park",
-    author: "Michael Crichton"
-  }
-];
+// db connection
+userConnection.on('error', console.error.bind(console, 'connection error:'));
+userConnection.once('open', function () {
 
-// The GraphQL schema in string form
-const typeDefs = `
-  type Query { books: [Book] }
-  type Book { title: String, author: String }
-`;
+	console.log("Connected correctly to users DB");
 
-// The resolvers
-const resolvers = {
-  Query: { books: () => books }
-};
+});
 
-// Put together a schema
+const typesArray = fileLoader(path.join(__dirname, './schemas'));
+const resolversArray = fileLoader(path.join(__dirname, './resolvers'));
+
+const typeDefs = mergeTypes(typesArray);
+
+const resolvers = mergeResolvers(resolversArray);
 const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers
+	typeDefs,
+	resolvers
 });
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -57,21 +50,21 @@ app.use("/graphql", bodyParser.json(), graphqlExpress({ schema }));
 app.get("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error("Not Found");
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+	var err = new Error("Not Found");
+	err.status = 404;
+	next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+app.use(function (err, req, res, next) {
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+	// render the error page
+	res.status(err.status || 500);
+	res.render("error");
 });
 
 module.exports = app;

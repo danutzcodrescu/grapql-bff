@@ -1,0 +1,14 @@
+type Relationship {
+  _id: ID!
+  status: String,
+  id1: String,
+  id2: String
+}
+
+type Query {
+  relationships: [Relationship],
+}
+
+type Mutation {
+  createRelationship(id1: String!, id2: String!): Relationship
+}
