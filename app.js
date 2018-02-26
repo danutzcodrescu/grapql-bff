@@ -4,13 +4,8 @@ var logger = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 import { fileLoader, mergeTypes, mergeResolvers } from "merge-graphql-schemas";
-import { merge } from "lodash";
 
-const {
-  graphqlExpress,
-  graphiqlExpress,
-  Query
-} = require("apollo-server-express");
+const { graphqlExpress, graphiqlExpress } = require("apollo-server-express");
 const { makeExecutableSchema } = require("graphql-tools");
 import userConnection from "./connections/users.connection";
 
@@ -21,9 +16,11 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 // db connection
+// eslint-disable-next-line
 userConnection.on("error", console.error.bind(console, "connection error:"));
 userConnection.once("open", function() {
-  console.log("Connected correctly to users DB");
+  // eslint-disable-next-line
+	console.log("Connected correctly to users DB");
 });
 
 const typesArray = fileLoader(path.join(__dirname, "./schemas"));
@@ -55,7 +52,8 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+// eslint-disable-next-line
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

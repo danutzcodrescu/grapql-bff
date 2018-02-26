@@ -4,7 +4,7 @@ import Relationship from "../models/Relationship.Model";
 export default {
   Query: {
     users: () => User.find({}),
-    user: (parent, { id }, { models }) => User.findById(id)
+    user: (parent, { id }) => User.findById(id)
   },
 
   User: {
@@ -13,6 +13,6 @@ export default {
   },
 
   Mutation: {
-    createUser: (parent, args, { models }) => User.create(args)
+    createUser: (parent, args) => User.create(args)
   }
 };
