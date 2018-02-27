@@ -8,13 +8,18 @@
 		"sourceType": "module"
 	},
 	"rules": {
-		"prettier/prettier": "error"
+		"prettier/prettier": "error",
+		"jest/no-focused-tests": 2,
+		"jest/no-identical-title": 2
 	},
 	"env": {
 		"es6": true,
-		"node": true
+		"node": true,
+		"jest": true
 	},
 	"plugins": [
-		"prettier"
+		"prettier",
+		"jest",
+		"import"
 	]
 }
