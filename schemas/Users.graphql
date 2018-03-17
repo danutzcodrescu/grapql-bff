@@ -3,6 +3,7 @@ type User {
   username: String
   createdAt: String
   updatedAt: String
+  status: String
   relationships: [Relationship]
 }
 
@@ -12,5 +13,5 @@ type Query {
 }
 
 type Mutation {
-  createUser(username: String!, password: String!): User
+  createUser(username: String!, password: String!, status: String): User
 }
