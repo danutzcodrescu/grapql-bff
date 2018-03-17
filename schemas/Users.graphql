@@ -12,6 +12,19 @@ type Query {
   user(id: ID!) : User
 }
 
+type UserAPIResponse {
+	success: Boolean!
+	user: User
+	errors: [Error]
+}
+
+type Error {
+	code: Int
+	message: String
+}
+
 type Mutation {
   createUser(username: String!, password: String!, status: String): User
+  login(username: String!, password: String!): UserAPIResponse
+  logout(id: ID!): UserAPIResponse
 }

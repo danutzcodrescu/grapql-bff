@@ -13,6 +13,55 @@ export default {
   },
 
   Mutation: {
-    createUser: (parent, args) => User.create(args)
+    createUser: (parent, args) => User.create(args),
+    login: async (parent, { username, password }) => {
+      let user = await User.findOne({ username, password });
+      if (user) {
+        user = await User.findByIdAndUpdate(
+          user.toObject()._id,
+          {
+            status: "active"
+          },
+          { new: true }
+        );
+        return {
+          success: true,
+          user
+        };
+      } else {
+        return {
+          success: false,
+          errors: [
+            {
+              code: 404,
+              message: "User not found"
+            }
+          ]
+        };
+      }
+    },
+    logout: async (parent, { id }) => {
+      try {
+        const user = await User.findByIdAndUpdate(
+          id,
+          { status: "offline" },
+          { new: true }
+        );
+        return {
+          success: true,
+          user
+        };
+      } catch (e) {
+        return {
+          success: false,
+          errors: [
+            {
+              code: 500,
+              message: e
+            }
+          ]
+        };
+      }
+    }
   }
 };

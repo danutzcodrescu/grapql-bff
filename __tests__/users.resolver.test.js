@@ -73,7 +73,78 @@ describe("[Users resolver]", () => {
       });
   });
 
+  it("should authenticate one user", done => {
+    const query = `mutation {
+	login(username: "${user.username}", password: "${user.password}") {
+		success
+		user {
+		_id
+		username
+		status
+		}
+		errors {
+		code
+		}
+	}
+	}`;
+    post("http://localhost:3000/graphql?", { query })
+      .then(resp => {
+        expect(resp.data.data.login.success).toBe(true);
+        expect(resp.data.data.login.errors).toBeNull();
+        expect(resp.data.data.login.user.status).toBe("active");
+        done();
+      })
+      .catch(e => {
+        done(e);
+      });
+  });
+
+  it("should not authenticate one user", done => {
+    const query = `mutation {
+	login(username: "${user.username}", password: "$test-sasa") {
+		success
+		user {
+		_id
+		username
+		status
+		}
+		errors {
+		code
+		}
+	}
+	}`;
+    post("http://localhost:3000/graphql?", { query })
+      .then(resp => {
+        expect(resp.data.data.login.success).toBe(false);
+        expect(resp.data.data.login.errors.length).toBe(1);
+        done();
+      })
+      .catch(e => {
+        done(e);
+      });
+  });
+
+  it("should logout one user", done => {
+    const query = `mutation {
+		logout(id:"${user.id}") {
+			success
+			user {
+			status
+			}
+		}
+		}`;
+    post("http://localhost:3000/graphql?", { query })
+      .then(resp => {
+        expect(resp.data.data.logout.success).toBe(true);
+        expect(resp.data.data.logout.user.status).toBe("offline");
+        done();
+      })
+      .catch(e => {
+        done(e);
+      });
+  });
+
   afterAll(async () => {
-    await User.remove({ status: "test" });
+    await User.remove({ $or: [{ status: "test" }, { _id: user._id }] });
   });
 });
