@@ -27,4 +27,5 @@ type Mutation {
   createUser(username: String!, password: String!, status: String): User
   login(username: String!, password: String!): UserAPIResponse
   logout(id: ID!): UserAPIResponse
+  changeStatus(id: ID!, status: String!): UserAPIResponse
 }

@@ -144,6 +144,26 @@ describe("[Users resolver]", () => {
       });
   });
 
+  it("should change status one user", done => {
+    const query = `mutation {
+		changeStatus(id:"${user.id}", status: "away") {
+			success
+			user {
+			status
+			}
+		}
+		}`;
+    post("http://localhost:3000/graphql?", { query })
+      .then(resp => {
+        expect(resp.data.data.changeStatus.success).toBe(true);
+        expect(resp.data.data.changeStatus.user.status).toBe("away");
+        done();
+      })
+      .catch(e => {
+        done(e);
+      });
+  });
+
   afterAll(async () => {
     await User.remove({ $or: [{ status: "test" }, { _id: user._id }] });
   });

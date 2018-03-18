@@ -62,6 +62,29 @@ export default {
           ]
         };
       }
+    },
+    changeStatus: async (parent, { id, status }) => {
+      try {
+        const user = await User.findByIdAndUpdate(
+          id,
+          { status },
+          { new: true }
+        );
+        return {
+          success: true,
+          user
+        };
+      } catch (e) {
+        return {
+          success: false,
+          errors: [
+            {
+              code: 500,
+              message: e
+            }
+          ]
+        };
+      }
     }
   }
 };
