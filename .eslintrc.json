@@ -8,7 +8,13 @@
 		"sourceType": "module"
 	},
 	"rules": {
-		"prettier/prettier": "warn",
+		"prettier/prettier": [
+			"warn",
+			{
+				"tabWidth": 2,
+				"singleQuote": true
+			}
+		],
 		"jest/no-focused-tests": 2,
 		"jest/no-identical-title": 2
 	},

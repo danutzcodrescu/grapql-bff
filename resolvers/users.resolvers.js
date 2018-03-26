@@ -1,5 +1,5 @@
-import User from "../models/Users.Model";
-import Relationship from "../models/Relationship.Model";
+import User from '../models/Users.Model';
+import Relationship from '../models/Relationship.Model';
 
 export default {
   Query: {
@@ -8,8 +8,8 @@ export default {
   },
 
   User: {
-    relationships: user =>
-      Relationship.find({ $or: [{ id1: user.id }, { id2: user.id }] })
+    relationships: root =>
+      Relationship.find({ $or: [{ id1: root._id }, { id2: root._id }] })
   },
 
   Mutation: {
@@ -20,7 +20,7 @@ export default {
         user = await User.findByIdAndUpdate(
           user.toObject()._id,
           {
-            status: "active"
+            status: 'active'
           },
           { new: true }
         );
@@ -34,7 +34,7 @@ export default {
           errors: [
             {
               code: 404,
-              message: "User not found"
+              message: 'User not found'
             }
           ]
         };
@@ -44,7 +44,7 @@ export default {
       try {
         const user = await User.findByIdAndUpdate(
           id,
-          { status: "offline" },
+          { status: 'offline' },
           { new: true }
         );
         return {

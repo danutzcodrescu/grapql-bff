@@ -1,26 +1,26 @@
-import User from "../models/Users.Model";
-import faker from "faker";
-import { post } from "axios";
+import User from '../models/Users.Model';
+import faker from 'faker';
+import { post } from 'axios';
 
-describe("[Users resolver]", () => {
+describe('[Users resolver]', () => {
   let user;
   beforeAll(async () => {
     user = await User.create({
       username: faker.internet.userName(),
       password: faker.internet.password(),
-      status: "test"
+      status: 'test'
     });
   });
 
-  it("should show the users", done => {
+  it('should show the users', done => {
     const query = `query {
 		users {
 			_id
 		}
 	}`;
-    post("http://localhost:3000/graphql?", JSON.stringify({ query }), {
+    post('http://localhost:3000/graphql?', JSON.stringify({ query }), {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     })
       .then(resp => {
@@ -32,7 +32,7 @@ describe("[Users resolver]", () => {
       });
   });
 
-  it("should show one user", done => {
+  it('should show one user', done => {
     const query = `query {
 		user(id: "${user._id}") {
 			_id
@@ -40,9 +40,9 @@ describe("[Users resolver]", () => {
 		}
 		}
 	`;
-    post("http://localhost:3000/graphql?", JSON.stringify({ query }), {
+    post('http://localhost:3000/graphql?', JSON.stringify({ query }), {
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       }
     })
       .then(resp => {
@@ -55,17 +55,17 @@ describe("[Users resolver]", () => {
       });
   });
 
-  it("should create one user", done => {
+  it('should create one user', done => {
     const query = `mutation {
-		createUser(username: "test2", password: "test", status: "test") {
-			username
-			createdAt
-			updatedAt
-		}
-	}`;
-    post("http://localhost:3000/graphql?", { query })
+			createUser(username: "test2", password: "test", status: "test") {
+				username
+				createdAt
+				updatedAt
+			}
+		}`;
+    post('http://localhost:3000/graphql?', { query })
       .then(resp => {
-        expect(resp.data.data.createUser.username).toBe("test2");
+        expect(resp.data.data.createUser.username).toBe('test2');
         done();
       })
       .catch(e => {
@@ -73,25 +73,25 @@ describe("[Users resolver]", () => {
       });
   });
 
-  it("should authenticate one user", done => {
+  it('should authenticate one user', done => {
     const query = `mutation {
-	login(username: "${user.username}", password: "${user.password}") {
-		success
-		user {
-		_id
-		username
-		status
-		}
-		errors {
-		code
-		}
-	}
-	}`;
-    post("http://localhost:3000/graphql?", { query })
+			login(username: "${user.username}", password: "${user.password}") {
+				success
+				user {
+				_id
+				username
+				status
+				}
+				errors {
+				code
+				}
+			}
+		}`;
+    post('http://localhost:3000/graphql?', { query })
       .then(resp => {
         expect(resp.data.data.login.success).toBe(true);
         expect(resp.data.data.login.errors).toBeNull();
-        expect(resp.data.data.login.user.status).toBe("active");
+        expect(resp.data.data.login.user.status).toBe('active');
         done();
       })
       .catch(e => {
@@ -99,21 +99,21 @@ describe("[Users resolver]", () => {
       });
   });
 
-  it("should not authenticate one user", done => {
+  it('should not authenticate one user', done => {
     const query = `mutation {
-	login(username: "${user.username}", password: "$test-sasa") {
-		success
-		user {
-		_id
-		username
-		status
-		}
-		errors {
-		code
-		}
-	}
-	}`;
-    post("http://localhost:3000/graphql?", { query })
+			login(username: "${user.username}", password: "$test-sasa") {
+				success
+				user {
+				_id
+				username
+				status
+				}
+				errors {
+				code
+				}
+			}
+		}`;
+    post('http://localhost:3000/graphql?', { query })
       .then(resp => {
         expect(resp.data.data.login.success).toBe(false);
         expect(resp.data.data.login.errors.length).toBe(1);
@@ -124,19 +124,19 @@ describe("[Users resolver]", () => {
       });
   });
 
-  it("should logout one user", done => {
+  it('should logout one user', done => {
     const query = `mutation {
-		logout(id:"${user.id}") {
-			success
-			user {
-			status
+			logout(id:"${user.id}") {
+				success
+				user {
+				status
+				}
 			}
-		}
 		}`;
-    post("http://localhost:3000/graphql?", { query })
+    post('http://localhost:3000/graphql?', { query })
       .then(resp => {
         expect(resp.data.data.logout.success).toBe(true);
-        expect(resp.data.data.logout.user.status).toBe("offline");
+        expect(resp.data.data.logout.user.status).toBe('offline');
         done();
       })
       .catch(e => {
@@ -144,19 +144,45 @@ describe("[Users resolver]", () => {
       });
   });
 
-  it("should change status one user", done => {
+  it('should change status one user', done => {
     const query = `mutation {
-		changeStatus(id:"${user.id}", status: "away") {
-			success
-			user {
-			status
+			changeStatus(id:"${user.id}", status: "away") {
+				success
+				user {
+				status
+				}
 			}
-		}
 		}`;
-    post("http://localhost:3000/graphql?", { query })
+    post('http://localhost:3000/graphql?', { query })
       .then(resp => {
         expect(resp.data.data.changeStatus.success).toBe(true);
-        expect(resp.data.data.changeStatus.user.status).toBe("away");
+        expect(resp.data.data.changeStatus.user.status).toBe('away');
+        done();
+      })
+      .catch(e => {
+        done(e);
+      });
+  });
+
+  it('should create a relationship', async done => {
+    const user2 = await User.create({
+      username: faker.internet.userName(),
+      password: faker.internet.password(),
+      status: 'test'
+    });
+    const query = `mutation {
+			createRelationship(id1: "${user._id}", id2: "${user2._id}") {
+				status
+				id1
+				id2
+			}
+		}`;
+    post('http://localhost:3000/graphql?', { query })
+      .then(resp => {
+        expect(resp.data.data.createRelationship.id1).toBe(user._id.toString());
+        expect(resp.data.data.createRelationship.id2).toBe(
+          user2._id.toString()
+        );
         done();
       })
       .catch(e => {
@@ -165,6 +191,6 @@ describe("[Users resolver]", () => {
   });
 
   afterAll(async () => {
-    await User.remove({ $or: [{ status: "test" }, { _id: user._id }] });
+    await User.remove({ $or: [{ status: 'test' }, { _id: user._id }] });
   });
 });
