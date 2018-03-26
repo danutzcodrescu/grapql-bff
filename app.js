@@ -3,6 +3,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+import cors from 'cors';
 import { fileLoader, mergeTypes, mergeResolvers } from 'merge-graphql-schemas';
 
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
@@ -41,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+app.use('/graphql', cors(), bodyParser.json(), graphqlExpress({ schema }));
 app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
 // catch 404 and forward to error handler
