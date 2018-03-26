@@ -1,4 +1,4 @@
-import Relationship from "../models/Relationship.Model";
+import Relationship from '../models/Relationship.Model';
 
 export default {
   Query: {

@@ -1,6 +1,6 @@
-var mongoose = require("mongoose");
+var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const connection = require("../connections/users.connection");
+const connection = require('../connections/users.connection');
 const RelationshipSchema = new Schema(
   {
     id1: String,
@@ -9,6 +9,6 @@ const RelationshipSchema = new Schema(
   },
   { timestamps: true }
 );
-const Relationship = connection.model("Relationship", RelationshipSchema);
+const Relationship = connection.model('Relationship', RelationshipSchema);
 
 export default Relationship;
